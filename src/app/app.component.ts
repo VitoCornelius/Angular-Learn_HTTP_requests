@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {map} from 'rxjs/operators';
+import { Post } from './post.model';
 
 @Component({
   selector: 'app-root',
@@ -16,10 +17,10 @@ export class AppComponent implements OnInit {
     this.fetchPosts();
   }
 
-  onCreatePost(postData: { title: string; content: string }) {
+  onCreatePost(postData: Post) {
     // Send Http request
     this.http
-      .post(
+      .post<{name : string}>(
         'https://angular-api-learn.firebaseio.com/posts.json',
         postData
       )
@@ -38,9 +39,14 @@ export class AppComponent implements OnInit {
   }
 
   private fetchPosts() {
+
+    //Get is a generic method, I do not have to specify the type in the map method
+
+    //this.http.get<{ [key:string] : Post }>('https://angular-api-learn.firebaseio.com/posts.json')
+
     this.http.get('https://angular-api-learn.firebaseio.com/posts.json')
-    .pipe(map(responseData => {
-      const postsArray = [];
+    .pipe(map((responseData : { [key:string] : Post }) => { //{[key:string]:{ title: string; content: string }}
+      const postsArray : Post[] = [];
       for (const key in responseData){
         if (responseData.hasOwnProperty(key)){ //czy ma taką wartość, inaczej bedzie undefined
           postsArray.push({ ...responseData[key], id:key});
