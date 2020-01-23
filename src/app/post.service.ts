@@ -36,4 +36,8 @@ export class PostService {
         return postsArray;
         }));
     }
+
+    deleteAll() {
+      this.http.delete('https://angular-api-learn.firebaseio.com/posts.json').subscribe();
+    }
 }
