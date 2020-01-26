@@ -10,17 +10,17 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, OnDestroy {
-  loadedPosts : Post[] = [];
-  isFetching : boolean = false;
+  loadedPosts: Post[] = [];
+  isFetching: boolean = false;
   error = null;
-  private errorSub : Subscription;
+  private errorSub: Subscription;
 
-  constructor(private http: HttpClient, private postService : PostService) {}
+  constructor(private http: HttpClient, private postService: PostService) { }
 
   ngOnInit() {
     this.errorSub = this.postService.error.subscribe(errorMessage => {
       this.error = errorMessage;
-    } )
+    })
 
     this.isFetching = true;
     this.postService.fetchPosts().subscribe(posts => {
