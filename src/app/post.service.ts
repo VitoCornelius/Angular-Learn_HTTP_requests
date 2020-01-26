@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Post } from './post.model';
 import {map} from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class PostService {
+
+    error = new Subject<string>();
 
     constructor(private http : HttpClient){}
 
@@ -19,6 +21,8 @@ export class PostService {
       )
       .subscribe(responseData => {
         console.log(responseData);
+      }, error => {
+        this.error.next(error);
       });
     }
 
