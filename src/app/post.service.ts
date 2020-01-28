@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpEventType } from '@angular/common/http';
 import { Post } from './post.model';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { Observable, Subject, throwError } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
@@ -17,7 +17,10 @@ export class PostService {
     this.http
       .post<{ name: string }>(
         'https://angular-api-learn.firebaseio.com/posts.json',
-        postData
+        postData,
+        {
+          observe : 'response' //return the full object 
+        }
       )
       .subscribe(responseData => {
         console.log(responseData);
@@ -56,6 +59,19 @@ export class PostService {
   }
 
   deleteAll() {
-    this.http.delete('https://angular-api-learn.firebaseio.com/posts.json').subscribe();
+    this.http.delete('https://angular-api-learn.firebaseio.com/posts.json',
+    {
+      observe : 'events'
+    }
+    ).pipe(tap(event => {
+      console.log(event);
+      if (event.type === HttpEventType.Sent){
+        console.log(event.type);
+      }
+      if (event.type === HttpEventType.Response){  //http events 
+        console.log(event.body);
+      }
+    }))
+    .subscribe();
   }
 }
