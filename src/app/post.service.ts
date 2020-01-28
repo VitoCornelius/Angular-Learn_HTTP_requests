@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Post } from './post.model';
 import { map, catchError } from 'rxjs/operators';
 import { Observable, Subject, throwError } from 'rxjs';
@@ -27,10 +27,16 @@ export class PostService {
   }
 
   fetchPosts(): Observable<any> {
+
+    let searchParams = new HttpParams();
+    searchParams = searchParams.append('print', 'pretty');
+    searchParams = searchParams.append('new', 'value'); //this is how you can attach multiple search params
+
     //Get is a generic method, I do not have to specify the type in the map method
     //this.http.get<{ [key:string] : Post }>('https://angular-api-learn.firebaseio.com/posts.json')
     return this.http.get('https://angular-api-learn.firebaseio.com/posts.json', {
-      headers : new HttpHeaders({'Custom-Header':'Hello'})
+      headers : new HttpHeaders({'Custom-Header':'Hello'}),
+      params : new HttpParams().set('print', 'pretty')
     })
       .pipe(
         map((responseData: { [key: string]: Post }) => { //{[key:string]:{ title: string; content: string }}
